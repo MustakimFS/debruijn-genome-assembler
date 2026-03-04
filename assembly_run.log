@@ -1,0 +1,14 @@
+Reading reads from: data/dataset1.txt
+Loaded 33609 reads
+Assembling genome with k=20...
+
+Assembly Result:
+  Genome length: 109 bases
+  Input reads: 33609
+  Graph vertices: 111283
+  Graph edges: 111624
+  Tips removed: 0
+  Bubbles resolved: 2
+  Assembly time: 1997 ms (2.00 seconds)
+
+AAAAAAAAATTAAATCCTGATGTATCAAATATTATATAATTAAAGCTCTTATATATATTAAATTTTTTTTTAATATTTAATGTTAAATATTTAAAATTAAAAAATAAAT
