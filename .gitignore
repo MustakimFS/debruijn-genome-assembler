@@ -1,0 +1,50 @@
+# Compiled class files
+*.class
+target/
+*.jar
+*.war
+*.ear
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build outputs
+build/
+out/
+
+# Maven
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+dependency-reduced-pom.xml
+
+# Logs
+*.log
+
+# Test outputs
+assembled_genome*.txt
+output_assignment*.txt
+output*.txt
+
+# Temporary files
+*.tmp
+*.swp
+*~
+
+# Node modules (for frontend later)
+node_modules/
+.env
+.env.local
+
+# Production builds
+dist/
+build/
