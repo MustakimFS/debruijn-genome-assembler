@@ -51,14 +51,21 @@ public class GenomeAssembler {
         DeBruijnGraph graph = new DeBruijnGraph(reads, config.kmerSize);
 
         // Error correction pipeline
-        TipRemover tipRemover1 = new TipRemover(graph, config.kmerSize);
-        int tipsRemoved1 = tipRemover1.removeTips();
+        // Error correction pipeline
+        int tipsRemoved1 = 0;
+        int bubblesResolved = 0;
+        int tipsRemoved2 = 0;
 
-        BubbleDetector bubbleDetector = new BubbleDetector(graph, config.kmerSize + 1);
-        int bubblesResolved = bubbleDetector.detectAndResolveBubbles();
+        if (!config.skipTipRemoval) {
+            TipRemover tipRemover1 = new TipRemover(graph, config.kmerSize);
+            tipsRemoved1 = tipRemover1.removeTips();
 
-        TipRemover tipRemover2 = new TipRemover(graph, config.kmerSize);
-        int tipsRemoved2 = tipRemover2.removeTips();
+            BubbleDetector bubbleDetector = new BubbleDetector(graph, config.kmerSize + 1);
+            bubblesResolved = bubbleDetector.detectAndResolveBubbles();
+
+            TipRemover tipRemover2 = new TipRemover(graph, config.kmerSize);
+            tipsRemoved2 = tipRemover2.removeTips();
+        }
 
         // Find Eulerian cycle
         EulerianCycleFinder cycleFinder = new EulerianCycleFinder(graph);
@@ -109,11 +116,12 @@ public class GenomeAssembler {
      * Configuration for genome assembly.
      */
     public static class AssemblyConfig {
-        public int kmerSize = 20;                    // K-mer size for de Bruijn graph
-        public int expectedGenomeLength = 5396;       // Expected genome length (phi X174)
-        public boolean trimToExpectedLength = true;   // Whether to trim circular overlap
-        public int trimStart = 14;                    // Start position for trimming
-        public int trimEnd = 5410;                    // End position for trimming
+        public int kmerSize = 20;
+        public int expectedGenomeLength = 5396;
+        public boolean trimToExpectedLength = true;
+        public int trimStart = 14;
+        public int trimEnd = 5410;
+        public boolean skipTipRemoval = false;
 
         public AssemblyConfig() {
         }

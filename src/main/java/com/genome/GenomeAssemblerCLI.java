@@ -59,6 +59,7 @@ public class GenomeAssemblerCLI {
             int kmerSize = 20;
             boolean printStats = false;
             boolean noTrim = false;
+            boolean noTips = false;
 
             for (int i = 1; i < args.length; i++) {
                 switch (args[i]) {
@@ -73,6 +74,9 @@ public class GenomeAssemblerCLI {
                         break;
                     case "--no-trim":
                         noTrim = true;
+                        break;
+                    case "--no-tips":
+                        noTips = true;
                         break;
                     case "-h":
                     case "--help":
@@ -92,6 +96,9 @@ public class GenomeAssemblerCLI {
             AssemblyConfig config = new AssemblyConfig(kmerSize);
             if (noTrim) {
                 config.noTrimming();
+            }
+            if (noTips) {
+                config.skipTipRemoval = true;
             }
 
             System.err.println("Assembling genome with k=" + kmerSize + "...");
@@ -148,20 +155,39 @@ public class GenomeAssemblerCLI {
         List<String> reads = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-            String line = reader.readLine();
+            String firstLine = reader.readLine();
+            if (firstLine == null) return reads;
 
-            // Handle optional count on first line
-            try {
-                Integer.parseInt(line.trim());
-                line = reader.readLine();
-            } catch (NumberFormatException ignored) {}
-
-            while (line != null) {
-                String read = line.trim();
-                if (!read.isEmpty()) {
-                    reads.add(read);
+            // FASTA format: header starts with '>'
+            if (firstLine.startsWith(">")) {
+                StringBuilder sequence = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    line = line.trim();
+                    if (line.startsWith(">")) continue; // skip additional headers
+                    if (!line.isEmpty()) sequence.append(line);
                 }
-                line = reader.readLine();
+                // Generate sliding-window reads from the full sequence
+                String fullSeq = sequence.toString();
+                int readLen = 70;   // simulated read length
+                int step = 10;      // step between reads (controls coverage)
+                for (int i = 0; i + readLen <= fullSeq.length(); i += step) {
+                    reads.add(fullSeq.substring(i, i + readLen));
+                }
+                return reads;
+            }
+
+            // Plain format: optional count on first line
+            try {
+                Integer.parseInt(firstLine.trim());
+            } catch (NumberFormatException ignored) {
+                if (!firstLine.trim().isEmpty()) reads.add(firstLine.trim());
+            }
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String read = line.trim();
+                if (!read.isEmpty()) reads.add(read);
             }
         }
 
@@ -184,6 +210,7 @@ public class GenomeAssemblerCLI {
                         "  -k <size>        K-mer size (default: 20)\n" +
                         "  -o <output>      Output file\n" +
                         "  --no-trim        Disable circular trimming\n" +
+                        "  --no-tips        Disable tip removal (use for clean/simulated reads)\n" +
                         "  --stats          Print assembly statistics\n"
         );
     }

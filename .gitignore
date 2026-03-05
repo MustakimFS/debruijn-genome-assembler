@@ -48,3 +48,4 @@ node_modules/
 # Production builds
 dist/
 build/
+data/sequence.fasta
