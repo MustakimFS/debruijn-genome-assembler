@@ -79,12 +79,26 @@ public class AssemblerService {
         }
 
         // Build command to run CLI
-        ProcessBuilder pb = new ProcessBuilder(
-                "java", "-jar", jarFile.getAbsolutePath(),
-                "assemble", new File(filePath).getAbsolutePath(),
-                "-k", String.valueOf(kmerSize),
-                "--stats"
-        );
+        // Detect FASTA format to apply appropriate flags
+        boolean isFasta = filePath.toLowerCase().endsWith(".fasta") ||
+                filePath.toLowerCase().endsWith(".fa");
+
+// Build command to run CLI
+        List<String> command = new ArrayList<>();
+        command.add("java");
+        command.add("-jar");
+        command.add(jarFile.getAbsolutePath());
+        command.add("assemble");
+        command.add(new File(filePath).getAbsolutePath());
+        command.add("-k");
+        command.add(String.valueOf(kmerSize));
+        command.add("--stats");
+        if (isFasta) {
+            command.add("--no-tips");
+            command.add("--no-trim");
+        }
+
+        ProcessBuilder pb = new ProcessBuilder(command);
 
         pb.redirectErrorStream(true);
         Process process = pb.start();
