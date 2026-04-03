@@ -7,6 +7,7 @@ WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 COPY lib ./lib
+COPY data ./data
 
 # Build the toolkit JAR first
 RUN mvn clean package -DskipTests
@@ -29,6 +30,7 @@ FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 
 COPY --from=build /app/backend/target/genome-assembler-api-1.0.0.jar app.jar
+COPY --from=build /app/data ./data
 
 EXPOSE 8080
 
