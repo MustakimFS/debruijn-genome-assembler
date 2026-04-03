@@ -31,6 +31,7 @@ WORKDIR /app
 
 COPY --from=build /app/backend/target/genome-assembler-api-1.0.0.jar app.jar
 COPY --from=build /app/data ./data
+COPY --from=build /app/lib/genome-toolkit-1.0.0.jar target/genome-toolkit-1.0.0.jar
 
 EXPOSE 8080
 
