@@ -19,7 +19,7 @@ public class ApiApplication {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**")
-                        .allowedOrigins("http://localhost:3000", "https://*.vercel.app")
+                        .allowedOrigins("http://localhost:3000", "https://debruijn-genome-assembler.vercel.app")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
