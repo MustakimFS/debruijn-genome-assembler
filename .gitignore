@@ -49,3 +49,5 @@ node_modules/
 dist/
 build/
 data/sequence.fasta
+
+!lib/*.jar

@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: genome-assembler-api
+    runtime: java
+    plan: free
+    buildCommand: mvn -f pom.xml clean package -DskipTests && mvn -f backend/pom.xml clean package -DskipTests
+    startCommand: java -jar backend/target/genome-assembler-api-1.0.0.jar
+    envVars:
+      - key: JAVA_VERSION
+        value: 17
+      - key: PORT
+        value: 8080
