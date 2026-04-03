@@ -11,6 +11,14 @@ COPY lib ./lib
 # Build the toolkit JAR first
 RUN mvn clean package -DskipTests
 
+# Manually install toolkit JAR into local Maven repo
+RUN mvn install:install-file \
+    -Dfile=lib/genome-toolkit-1.0.0.jar \
+    -DgroupId=com.genome \
+    -DartifactId=genome-toolkit \
+    -Dversion=1.0.0 \
+    -Dpackaging=jar
+
 # Copy backend and build it
 COPY backend ./backend
 RUN mvn -f backend/pom.xml clean package -DskipTests
